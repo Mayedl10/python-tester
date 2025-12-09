@@ -9,8 +9,42 @@
   - modular mode
     - a helper script (.py) imports a function/class/other and tests it
 
-#### Arguments
+#### Usage
 
-- `pytest -unpack tasks.json` - unpacks/prepares a set of tasks, stored in .json
-- `pytest -test main.py exampleTest` - examines main.py according to test with label "exampleTest"
-- `pytest -generate tasks` - takes a folder and converts it to a .json task set/sheet
+Parameters are passed without file extensions (assumes .py and .json)
+
+`pytest [test] [script] [task#]`
+- `test` is a valid test package in json format
+- `script` is a python script
+- `task#` is the task identifier within the package
+
+#### Package format
+
+An example for a valid test format:
+```js
+{
+    "tasks": [
+        {
+            "label":0,
+            "description":"test number one",
+            "tests":[
+                {
+                    "mode":1,
+                    "input":"abc",
+                    "output":"b",
+                    "hidden":false,
+                    "timeout":5
+                },
+                {
+                    "mode":2,
+                    "helper":"from test import foo\nfoo(\"cde\")",
+                    "input":"",
+                    "output":"d",
+                    "hidden":true,
+                    "timeout":5
+                }
+            ]
+        }
+    ]
+}
+```
