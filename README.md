@@ -4,9 +4,9 @@
 - Evaluate if a student's script is implemented correctly
 - Exercises stored in json format
 - 2 Modes:
-  - consoleIO mode
+  - consoleIO mode (1)
     - a specific input is meant to lead to a specific output - done via `python3 main.py > output.txt < input.txt`
-  - modular mode
+  - modular mode (2)
     - a helper script (.py) imports a function/class/other and tests it
 
 #### Usage
