@@ -35,13 +35,23 @@ def testTask(file:str, task:dict)->None:
 def testConsoleMode(file:str, test:dict)->subprocess.CompletedProcess:
     inp = test["input"]
 
-    result = subprocess.run(
-        ["python3", file],
-        input=inp,
-        capture_output=True,
-        text=True,
-        timeout=test["timeout"]
-    )
+    try:
+        result = subprocess.run(
+            ["python3", file],
+            input=inp,
+            capture_output=True,
+            text=True,
+            timeout=test["timeout"]
+        )
+    except subprocess.TimeoutExpired as exc:
+        # The process was killed after the timeout.
+        # exc.stdout and exc.stderr contain whatever was captured up to that point.
+        result = subprocess.CompletedProcess(
+            args=exc.cmd,
+            returncode=1,
+            stdout=exc.stdout or "",
+            stderr=exc.stderr or f"Timed out after {test['timeout']} seconds\n"
+        )
 
     return result
 
@@ -54,14 +64,24 @@ def testModularMode(file:str, test:dict)->subprocess.CompletedProcess:
 
     inp = test["input"]
 
-    result = subprocess.run(
-        ["python3", HELPERFILE],
-        input=inp,
-        capture_output=True,
-        text=True,
-        timeout=test["timeout"]
-    )
-    
+    try:
+        result = subprocess.run(
+            ["python3", HELPERFILE],
+            input=inp,
+            capture_output=True,
+            text=True,
+            timeout=test["timeout"]
+        )
+    except subprocess.TimeoutExpired as exc:
+        # The process was killed after the timeout.
+        # exc.stdout and exc.stderr contain whatever was captured up to that point.
+        result = subprocess.CompletedProcess(
+            args=exc.cmd,
+            returncode=1,
+            stdout=exc.stdout or "",
+            stderr=exc.stderr or f"Timed out after {test['timeout']} seconds\n"
+        )
+
     return result
 
 def printTestOutcome(results:list)->None:
