@@ -44,8 +44,6 @@ def testConsoleMode(file:str, test:dict)->subprocess.CompletedProcess:
             timeout=test["timeout"]
         )
     except subprocess.TimeoutExpired as exc:
-        # The process was killed after the timeout.
-        # exc.stdout and exc.stderr contain whatever was captured up to that point.
         result = subprocess.CompletedProcess(
             args=exc.cmd,
             returncode=1,
