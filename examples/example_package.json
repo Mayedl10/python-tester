@@ -1,0 +1,25 @@
+{
+    "tasks": [
+        {
+            "label":0,
+            "description":"test number one",
+            "tests":[
+                {
+                    "mode":1,
+                    "input":"abc",
+                    "output":"b",
+                    "hidden":false,
+                    "timeout":5
+                },
+                {
+                    "mode":2,
+                    "helper":"from test import foo\nfoo(\"cde\")",
+                    "input":"",
+                    "output":"d",
+                    "hidden":true,
+                    "timeout":5
+                }
+            ]
+        }
+    ]
+}
