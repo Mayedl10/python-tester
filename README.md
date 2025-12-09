@@ -18,6 +18,8 @@ Parameters are passed without file extensions (assumes .py and .json)
 - `script` is a python script
 - `task#` is the task identifier within the package
 
+To test the provided example, run `./pytest.py ./examples/example_package ./examples/example 0`
+
 #### Package format
 
 An example for a valid test format:
