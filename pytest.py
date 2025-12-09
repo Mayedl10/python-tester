@@ -11,7 +11,7 @@ def is_str_int(s: str) -> bool:
     """Return True if *s* represents an integer without a decimal point."""
     return s.isdigit() or (s.startswith('-') and s[1:].isdigit())
 
-
+# check if the parameters are valid
 if len(sys.argv) < 4:
     print("Please provide at least three arguments.\nUsage: pytest [test] [script] [task#] (without file extensions)")
     exit()
@@ -34,9 +34,11 @@ f.close()
 script = sys.argv[2]+".py"
 identifier = int(sys.argv[3])
 
+# execute tests matching identifier
 for task in package["tasks"]:
     if (task["label"] == identifier):
         testTask(script, task)
         break
 else:
+    # invalid identifier
     print(f"No task with identifier {identifier} was found in package {sys.argv[1]}.json")

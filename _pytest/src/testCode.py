@@ -3,18 +3,21 @@ import subprocess
 TESTFILE = "./_pytest/live/test.py"
 HELPERFILE = "./_pytest/live/helper.py"
 
+# tests a file with a specific set of tasks, defined in "task"
 def testTask(file:str, task:dict)->None:
 
     with open(file, "r") as f:
         code = f.read()
     f.close()
 
+    # copy file to "live"/"save" location
     with open(TESTFILE, "w") as f:
         f.write(code)
     f.close()
 
     results = []
 
+    # execute tests
     for i in range(len(task["tests"])):
         t = task["tests"][i]
         response = []
@@ -28,13 +31,14 @@ def testTask(file:str, task:dict)->None:
         response.append(t["output"].strip() == response[0].stdout.strip() and response[0].stderr.strip() == "")
         results.append(response)
 
-    printTestOutcome(results)
+    printTestOutcome(results) # display results
 
 
 
 def testConsoleMode(file:str, test:dict)->subprocess.CompletedProcess:
     inp = test["input"]
 
+    # try-except to handle timeouts
     try:
         result = subprocess.run(
             ["python3", file],
@@ -56,12 +60,14 @@ def testConsoleMode(file:str, test:dict)->subprocess.CompletedProcess:
 
 def testModularMode(file:str, test:dict)->subprocess.CompletedProcess:
    
+    # fill actual helper FILE with helper script
     with open(HELPERFILE, "w") as f:
         f.write(test["helper"])
     f.close()
 
     inp = test["input"]
 
+    # try-except to handle timeouts
     try:
         result = subprocess.run(
             ["python3", HELPERFILE],
@@ -71,8 +77,6 @@ def testModularMode(file:str, test:dict)->subprocess.CompletedProcess:
             timeout=test["timeout"]
         )
     except subprocess.TimeoutExpired as exc:
-        # The process was killed after the timeout.
-        # exc.stdout and exc.stderr contain whatever was captured up to that point.
         result = subprocess.CompletedProcess(
             args=exc.cmd,
             returncode=1,
@@ -92,6 +96,7 @@ def printTestOutcome(results:list)->None:
         print(f"--- Test {i+1} ---")
         
         if t["hidden"] == False:
+            # mode 1
             if results[i][1]["mode"] == 1:
                 print(f"Input:\t\t{t['input']}")
                 print(f"Expected:\t{t['output']}")
@@ -104,6 +109,7 @@ def printTestOutcome(results:list)->None:
                     print("> Failed <")
                     print(r.stderr, end="")
                 
+            # mode 2
             if results[i][1]["mode"] == 2:
                 print(f"Input handled by helper script")
                 print(f"Expected:\t{t['output']}")
@@ -115,7 +121,8 @@ def printTestOutcome(results:list)->None:
                 else:
                     print("> Failed <")
                     print(r.stderr, end="")
-
+        
+        # handle hidden tests
         else:
             if (s):
                 score += 1
